@@ -33,7 +33,6 @@ local defaultshowpioffcd = 0;
 local defaultshowveoffcd = 0;
 local defaultshowuvlsicon = 0;
 local defaultcolorbuffswithbuffscore = 0;
-local defaultdeactivate_2pt15display = 1;
 local defaultshowdotssooutoffcombat = 0;
 local defaultshoweverythingoutofcombat = 0;
 
@@ -229,11 +228,6 @@ function SaveButton_OnClick()
 		ColorBuffsWithBuffScore = 1;
 	else
 		ColorBuffsWithBuffScore = 0;
-	end
-	if (CheckButtonDeactivate_2pT15display:GetChecked() == true) then
-		Deactivate_2pT15display = 1;
-	else
-		Deactivate_2pT15display = 0;
 	end
 	if (CheckButtonShowDotsSoOutOffCombat:GetChecked() == true) then
 		ShowDotsSoOutOffCombat = 1;
@@ -486,11 +480,6 @@ function OptionsFrame_OnEvent(self, event, ...)
 			--arg2 = "Cooldown Offset"
 			DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer Default ColorBuffsWithBuffScore Loaded...");
 		end
-		if(not Deactivate_2pT15display) then			
-			Deactivate_2pT15display = defaultdeactivate_2pt15display;
-			--arg2 = "Cooldown Offset"
-			DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer Default Deactivate_2pT15display Loaded...");
-		end
 		if(not ShowDotsSoOutOffCombat) then			
 			ShowDotsSoOutOffCombat = defaultshowdotssooutoffcombat;
 			--arg2 = "Cooldown Offset"
@@ -604,10 +593,6 @@ function OptionsFrame_OnEvent(self, event, ...)
 			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Color buffs like buff score to on");
 			CheckButtonColorBuffsWithBuffScore:SetChecked(true);
 		end
-		if (Deactivate_2pT15display == 1) then
-			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Color buffs like buff score to on");
-			CheckButtonDeactivate_2pT15display:SetChecked(true);
-		end
 		if (ShowDotsSoOutOffCombat == 1) then
 			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Color buffs like buff score to on");
 			CheckButtonShowDotsSoOutOffCombat:SetChecked(true);
@@ -686,8 +671,6 @@ function OptionsFrame_OnEvent(self, event, ...)
 		Show_UVLSicon = defaultshowuvlsicon;
 		
 		ColorBuffsWithBuffScore = defaultcolorbuffswithbuffscore;
-	
-		Deactivate_2pT15display = defaultdeactivate_2pt15display;
 	
 		ShowDotsSoOutOffCombat = defaultshowdotssooutoffcombat;
 		
@@ -795,10 +778,6 @@ function OptionsFrame_OnEvent(self, event, ...)
 		if (ColorBuffsWithBuffScore == 1) then
 			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Color buffs like buff score to on");
 			CheckButtonColorBuffsWithBuffScore:SetChecked(true);
-		end
-		if (Deactivate_2pT15display == 1) then
-			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Color buffs like buff score to on");
-			CheckButtonDeactivate_2pT15display:SetChecked(true);
 		end
 		if (ShowDotsSoOutOffCombat == 1) then
 			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Color buffs like buff score to on");
@@ -936,11 +915,6 @@ function OptionsFrame_OnEvent(self, event, ...)
 			ColorBuffsWithBuffScore = 1;
 		else
 			ColorBuffsWithBuffScore = 0;
-		end
-		if (CheckButtonDeactivate_2pT15display:GetChecked() == true) then
-			Deactivate_2pT15display = 1;
-		else
-			Deactivate_2pT15display = 0;
 		end
 		if (CheckButtonShowDotsSoOutOffCombat:GetChecked() == true) then
 			ShowDotsSoOutOffCombat = 1;

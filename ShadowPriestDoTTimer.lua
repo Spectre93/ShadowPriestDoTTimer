@@ -52,13 +52,6 @@ local Texture5used = false;
 --Used to indivate UVLS is active
 local UVLS_active = false;
 
---Used to determine if 2 piece T15 Set bonus is equipped
-local set2t15 = false;
-
---Duration of DoTs for 2t15set bonus proc check
-local VTduration = 0;
-local SWPduration = 0;
-
 --Shadowy Apparition array 
 local ShadowyApp_GUID = {};
 local MyID;
@@ -126,30 +119,6 @@ end
 --    if num >= 0 then return math.floor(num+.5) 
 --    else return math.ceil(num-.5) end
 --end
-
-
-local function Detect2T15()
-    set2t15 = false;
-    local t15items = 0;
-    local t15set = {
-        96674,96675,96676,96677,96678,
-        95300,95301,95302,95303,95304,
-        95930,95931,95932,95933,95934,
-    };
-    for i,v in ipairs(t15set) do
-        if IsEquippedItem(v) then
-            t15items = t15items + 1;
-        end
-    end
-    if t15items >= 2 then 
-    	set2t15 = true;
-    end
---    if (set2t15 == true) then 
---    	DEFAULT_CHAT_FRAME:AddMessage("set2T15: true");
---    else
---      DEFAULT_CHAT_FRAME:AddMessage("set2T15: false");
---    end
-end
 
 local function HideAll()
 	SPDT_Texture1:Hide();
@@ -358,7 +327,6 @@ local function CheckCurrentTargetDeBuffs()
 					VTleftMS = VTlefttime*1000;
 					CastTime = castTimeVT;
 					--VTleftMSSafe = VTleftMS-WarningTime;
-					VTduration = bduration;
 				end
 				if bn == namePlague then 
 					PlagueFound = 1;
@@ -375,7 +343,6 @@ local function CheckCurrentTargetDeBuffs()
 						WordPainLeft = string.format("%d",WordPainlefttime);
 					end  
 					WordPainleftMS = WordPainlefttime*1000;
-					SWPduration = bduration;
 				end
 			end
 		end
@@ -386,10 +353,6 @@ local function CheckCurrentTargetDeBuffs()
 		--VT number above (re-)assignment
 		FindCurrentMob();
 		if (currentmob and (HideNumberAboveVT == 0)) then
-			if (((GetTime() - currentmob[4]) > 15 ) and (Deactivate_2pT15display == 0) and ((currentmob[5] == true) or (currentmob[10] == 1))) then
-			     currentmob[2] = currentmob[10];
-			     --DEFAULT_CHAT_FRAME:AddMessage("extended VT buffscore: " .. currentmob[10]);
-			end
 			if ((currentmob[5] == true) or (currentmob[10] == 1)) then
 				SPDT_TEXT1Above:SetText(string.format("%s", "UVLS"));
 			else
@@ -480,10 +443,6 @@ local function CheckCurrentTargetDeBuffs()
 		--SWP number above assignment
 		FindCurrentMob();
 		if (currentmob and (HideNumberAboveSWP == 0)) then
-			if (((GetTime() - currentmob[9]) > 18 ) and (Deactivate_2pT15display == 0) and ((currentmob[6] == true) or (currentmob[11] == 1))) then
-				currentmob[3] = currentmob[11];
-				--DEFAULT_CHAT_FRAME:AddMessage("extended SWP buffscore: " .. currentmob[11]);
-			end
 			if ((currentmob[6] == true) or (currentmob[11] == 1)) then
 				SPDT_TEXT2Above:SetText(string.format("%s", "UVLS"));
 			else
@@ -1100,7 +1059,6 @@ function ShadowPriestDoTTimerFrame_OnLoad(self)
 			ActiveSpec = GetActiveSpecGroup() or 1;
 			ShadowSpecc = true;
 			DEFAULT_CHAT_FRAME:AddMessage("---Shadow Priest DoT Timer Loaded---");
-			Detect2T15();
 		--with another specc
 		else 
 			local currentSpecName = currentSpec and select(2, GetSpecializationInfo(currentSpec)) or "None";
@@ -1270,110 +1228,17 @@ function ShadowPriestDoTTimerFrame_OnEvent(self, event, ...)
 				end
 			end
 		end
-	elseif (event == "COMBAT_LOG_EVENT_UNFILTERED" and (Deactivate_2pT15display == 0)) then
-		local event_type, _, Source_GUID, _, SourceFlags, _, destination_GUID = select(2, ...);
-		--DEFAULT_CHAT_FRAME:AddMessage("CombatLogEvent");
-		if (event_type == "SPELL_DAMAGE") then
-			local spellID = select(12,...);
-			if ((spellID == Shadowy_ApparitionsID) and (Source_GUID == MyID) and (SourceFlags == 1297) and (set2t15 == true)) then
-				--DEFAULT_CHAT_FRAME:AddMessage("Event: SpellDmg with my SA PTR");
-				if (destination_GUID == UnitGUID("target") or 
-					destination_GUID == UnitGUID("mouseover") or 
-					destination_GUID == UnitGUID("focus") or 
-					destination_GUID == UnitGUID("boss1") or 
-					destination_GUID == UnitGUID("boss2") or 
-					destination_GUID == UnitGUID("boss3") or 
-					destination_GUID == UnitGUID("boss4") or 
-					destination_GUID == UnitGUID("boss5"))    then
-					--DEFAULT_CHAT_FRAME:AddMessage("My Shadowy app hits with 2pt15 @5.4");
-					local target;
-					if (destination_GUID == UnitGUID("target")) then target = "target"
-					elseif (destination_GUID == UnitGUID("mouseover")) then target = "mouseover"
-					elseif (destination_GUID == UnitGUID("focus")) then target = "focus"
-					elseif (destination_GUID == UnitGUID("boss1")) then target = "boss1"
-					elseif (destination_GUID == UnitGUID("boss2")) then target = "boss2"
-					elseif (destination_GUID == UnitGUID("boss3")) then target = "boss3"
-					elseif (destination_GUID == UnitGUID("boss4")) then target = "boss4"
-					elseif (destination_GUID == UnitGUID("boss5")) then target = "boss5"
-					end
-					local finished = false;
-					local count = 0;
-					while not finished do
-						count = count+1				
-						local bn,_,_,_,_,bduration,_,bisMine,_,_,bspellId =  UnitDebuff(target, count, 0);
-						if (not bn) then
-							finished = true;
-						else
-							--DEFAULT_CHAT_FRAME:AddMessage("testing debuff");
-							if bisMine == "player" then
-							--DEFAULT_CHAT_FRAME:AddMessage("ismine debuff");
-								if bn == nameVT then
-									--check for 2pT15 proc
-									--DEFAULT_CHAT_FRAME:AddMessage("Vt extended ");
-									FindOrCreateCurrentMob(destination_GUID);
-									if (currentmob) then
-										if (UVLS_active == true) then
-											currentmob[10] = 1;
-										else
-											currentmob[10] = savedbuffscorecurrent;
-										end
-									end
-										
-									if ((HideNumberAboveVT == 0) and (GetTime() - currentmob[4] > 15)) then
-										if (UVLS_active == true) then
-											SPDT_TEXT1Above:SetText(string.format("%s", "UVLS"));
-										else
-											SPDT_TEXT1Above:SetText(string.format("%d", savedbuffscorecurrent));
-										end
-										SPDT_TEXT1Above:Show();
-									end
-								end
-								
-								if bn == nameWordPain then 
-									--DEFAULT_CHAT_FRAME:AddMessage("SWP extended ");
-									FindOrCreateCurrentMob(destination_GUID);
-									if (currentmob) then
-										if (UVLS_active == true) then
-											currentmob[11] = 1;
-										else
-											currentmob[11] = savedbuffscorecurrent;
-											--DEFAULT_CHAT_FRAME:AddMessage("SWP extended with buffscore " .. currentmob[11]);
-										end	
-									end	
-																			
-									if (HideNumberAboveSWP == 0 and (GetTime() - currentmob[9] > 18)) then
-										if (currentmob[11] == 1) then
-											SPDT_TEXT2Above:SetText(string.format("%s", "UVLS"));
-										else
-											SPDT_TEXT2Above:SetText(string.format("%d", savedbuffscorecurrent));
-										end
-										SPDT_TEXT2Above:Show();
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-		end	
-	elseif (event == "PLAYER_EQUIPMENT_CHANGED") then
-		Detect2T15();
-	elseif (event == "PLAYER_ENTERING_WORLD") then
-		Detect2T15();
-		--DEFAULT_CHAT_FRAME:AddMessage("-->Player entering world!");
 	elseif ((event == "ADDON_LOADED") and arg1 == ("ShadowPriestDoTTimer")) then
 		if (not ShadowPriestDoTTimerFrameScaleFrame) then
 			ShadowPriestDoTTimerFrameScaleFrame = 1.0;
 		end
 		ShadowPriestDoTTimerFrame:SetScale(ShadowPriestDoTTimerFrameScaleFrame);
 		SPDT_SetCooldownOffsets();
-		Detect2T15();
 		MyID = UnitGUID("player");
 	elseif ((event == "SAVED_VARIABLES_TOO_LARGE") and (arg1 == "ShadowPriestDoTTimer")) then
 		ShadowPriestDoTTimerFrameScaleFrame = 1.0;
 		ShadowPriestDoTTimerFrame:SetScale(ShadowPriestDoTTimerFrameScaleFrame);
 		SPDT_SetCooldownOffsets();
-		Detect2T15();
 		MyID = UnitGUID("player");
 	elseif (event == "PLAYER_LOGOUT") then
 		ShadowPriestDoTTimerFrameScaleFrame = ShadowPriestDoTTimerFrame:GetScale();
@@ -1394,8 +1259,6 @@ function ShadowPriestDoTTimerFrame_OnEvent(self, event, ...)
 		isincombat = true;
 	end
 end
-
-
 
 SLASH_SHADOWPRIESTDOTTIMER1, SLASH_SHADOWPRIESTDOTTIMER2 = '/spdt', '/ShadowPriestDoTTimer';
 
@@ -1452,10 +1315,3 @@ local function SLASH_SHADOWPRIESTDOTTIMERhandler(msg, editbox)
 end
 
 SlashCmdList["SHADOWPRIESTDOTTIMER"] = SLASH_SHADOWPRIESTDOTTIMERhandler;
-
-
-
-
-
-
-

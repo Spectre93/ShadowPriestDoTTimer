@@ -1138,29 +1138,6 @@
 					</Layer>
 				</Layers>
 			</CheckButton>
-			<CheckButton name="CheckButtonDeactivate_2pT15display" inherits="UICheckButtonTemplate" text="Deactivate 2pT15 update">
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="350" y="-354" />
-					</Anchor>
-				</Anchors>
-				<Layers>
-					<Layer>
-						<FontString name="$parentText" inherits="GameFontNormalSmall" text="Deactivate 2pT15 update display" justifyH="LEFT">
-							<Size>
-								<AbsDimension x="160" y="20" />
-							</Size>
-							<Anchors>
-								<Anchor point="LEFT" relativePoint="RIGHT">
-									<Offset>
-										<AbsDimension x="-2" y="0" />
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-			</CheckButton>
 			<CheckButton name="CheckButtonShowDotsSoOutOffCombat" inherits="UICheckButtonTemplate" text="Show icons out of combat">
 				<Anchors>
 					<Anchor point="TOPLEFT">
