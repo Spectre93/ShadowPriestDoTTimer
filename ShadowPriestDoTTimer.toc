@@ -3,7 +3,7 @@
 ## Notes: Keeps track of Shadow Priest DoTs and displays your current damage for reapplication of your DoTs.
 ## SavedVariables: HasteWeight, CritWeight, MasteryWeight, DamageWeight, SpellpowerWeight, ShadowPriestDoTTimerxPosiFrame, ShadowPriestDoTTimerFrameScaleFrame, HideVEmbrace, HideOrbs, HidePInf, BuffList, HideMB, CooldownOffset, HideSoD, ClassBuffList, HideSWD, ShowMBOffCD, CalcHasteNew, HideDP, OffsetbuffscoreSWP, OffsetbuffscoreVT, HideNumberAboveVT, HideNumberAboveSWP, HideNumberAboveSaI, HideBuffscore, HideTimerVT, HideTimerSWP, HideTimerDP, HideIconVT, HideIconSWP, HideIconDP, ShowPIOffCD, ShowVEOffCD, ColorBuffsWithBuffScore, ShowDotsSoOutOffCombat, ShowEverythingOutOfCombat
 ## Title: Shadow Priest DoT Timer
-## Version: 1.8f
+## Version: 1.9a
 
 ShadowPriestDoTTimer.xml
 ShadowPriestDoTTimer.lua

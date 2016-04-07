@@ -20,10 +20,7 @@ local ShadowSpecc = false;
 local ActiveSpec = 1;
 
 --Used to keep track of the DoTs on a Mob.
-local moblist = {};
 local isincombat = false;
-local currentmob = nil;
-local maxmoblist = 10;
 
 --Save the previous ShadowOrbs number
 local PrevShadowOrbsCount = "0 %";
@@ -162,57 +159,6 @@ function SPDT_SetCooldownOffsets()
 	SPDT_TEXT8:SetPoint(point, relativeTo, relativePoint, xOfs, CooldownOffset);
 end
 
-local function FindCurrentMob()
-	local targetguid = UnitGUID("playertarget");
-	currentmob = nil;
-	if (targetguid) then
-		local i = 1;
-		while not currentmob and i <= #moblist do
-			if (moblist[i][1] == targetguid) then
-				currentmob = moblist[i];
-			end
-			i = i + 1;
-		end
-	end
-end
-
-local function FindOrCreateCurrentMob(targetguid_given)
-	local targetguid;
-	if (targetguid_given) then
-		targetguid = targetguid_given;
-	else
-		targetguid = UnitGUID("playertarget");
-	end
-	currentmob = nil;
-
-	if (targetguid) then
-		--DEFAULT_CHAT_FRAME:AddMessage("SPDT Player Target: " .. targetguid);
-		local i = 1;
-		while not currentmob and i <= #moblist do
-			if (moblist[i][1] == targetguid) then
-				currentmob = moblist[i];
-			end
-			i = i + 1;
-		end
-
-		if (not currentmob) then
-			-- GUID, buffscoreVT, buffscoreSWP, timewhenVTwascasted, _, _, _, _, timewhenSWPwascasted, buffscoreofSA_hitsonVT, buffscoreofSA_hitsonSWP
-			currentmob = {targetguid, 0, 0, GetTime(), 0, 0, 0, 0, GetTime(), 0, 0};
-			table.insert(moblist, currentmob);
-			--DEFAULT_CHAT_FRAME:AddMessage("SPDT New mob: " .. currentmob[1]);
-		else
-			--DEFAULT_CHAT_FRAME:AddMessage("SPDT Found mob: " .. currentmob[1]);
-		end
-	end
-end
-
-local function ClearMobList()
-	for i = 1, #moblist do
-		table.remove(moblist, i);
-	end
-	currentmob = nil;
-end
-
 -- check for talent Solace and Insanity is learned
 local function SolaceInsanity_Check()
 	-- SW:Insanity -- 
@@ -342,8 +288,7 @@ local function CheckCurrentTargetDeBuffs()
 	if (VTFound == 1) then
 			
 		--VT number above (re-)assignment
-		FindCurrentMob();
-		if (currentmob and (HideNumberAboveVT == 0)) then
+		if (HideNumberAboveVT == 0) then
 			SPDT_TEXT1Above:SetText(string.format("%d", buffscorecurrent));
 		end
 	
@@ -357,15 +302,7 @@ local function CheckCurrentTargetDeBuffs()
 					SPDT_Texture1:SetVertexColor(0.9, 0.2, 0.2);		--red
 				end
 			else
-				if (currentmob) then
-					if ((buffscorecurrent > (currentmob[2] + OffsetbuffscoreVT)) and (ColorBuffsWithBuffScore == 1)) then
-						SPDT_Texture1:SetVertexColor(0.2, 0.2, 0.8);		--blue
-					else
-						SPDT_Texture1:SetVertexColor(1.0, 1.0, 1.0);		--no color				
-					end
-				else
-					SPDT_Texture1:SetVertexColor(1.0, 1.0, 1.0);			--nothing
-				end	
+				SPDT_Texture1:SetVertexColor(1.0, 1.0, 1.0);			--nothing
 			end
 		else 
 			if (ShowDotsSoOutOffCombat == 0) then
@@ -378,15 +315,7 @@ local function CheckCurrentTargetDeBuffs()
 		--VT number above display and coloring
 		if (HideNumberAboveVT == 0) then
 			--set the color of the text above to green, when reapplication is usefull
-			if (currentmob) then
-				if (buffscorecurrent > (currentmob[2] + OffsetbuffscoreVT)) then
-					SPDT_TEXT1Above:SetVertexColor(0.1, 0.6, 0.1);	--green
-				else
-			   		SPDT_TEXT1Above:SetVertexColor(1.0, 0.9, 0.1);	--red
-		   		end
-			else
-		   		SPDT_TEXT1Above:SetVertexColor(1.0, 0.9, 0.1);		--yellow
-			end
+			SPDT_TEXT1Above:SetVertexColor(1.0, 0.9, 0.1);		--yellow
 			SPDT_TEXT1Above:Show();
 		end
 		
@@ -411,8 +340,7 @@ local function CheckCurrentTargetDeBuffs()
 	if (WordPainFound == 1) then
 			
 		--SWP number above assignment
-		FindCurrentMob();
-		if (currentmob and (HideNumberAboveSWP == 0)) then
+		if (HideNumberAboveSWP == 0) then
 			SPDT_TEXT2Above:SetText(string.format("%d", buffscorecurrent));
 		end
 	
@@ -426,15 +354,7 @@ local function CheckCurrentTargetDeBuffs()
 					SPDT_Texture2:SetVertexColor(0.9, 0.2, 0.2);	--red
 				end
 			else
-				if (currentmob) then
-					if ((buffscorecurrent > (currentmob[3] + OffsetbuffscoreSWP)) and (ColorBuffsWithBuffScore == 1)) then
-						SPDT_Texture2:SetVertexColor(0.2, 0.2, 0.9);		--blue
-					else
-						SPDT_Texture2:SetVertexColor(1.0, 1.0, 1.0);		--no color				
-					end
-				else
-					SPDT_Texture2:SetVertexColor(1.0, 1.0, 1.0);		--no color
-				end
+				SPDT_Texture2:SetVertexColor(1.0, 1.0, 1.0);		--no color
 			end
 		else
 			if (ShowDotsSoOutOffCombat == 0) then
@@ -448,15 +368,7 @@ local function CheckCurrentTargetDeBuffs()
 		--SWPnumber above display and coloring
 		if (HideNumberAboveSWP == 0) then
 			--set the color of the text above to green, when reapplication is usefull
-			if (currentmob) then
-				if (buffscorecurrent > (currentmob[3] + OffsetbuffscoreSWP)) then
-					SPDT_TEXT2Above:SetVertexColor(0.1, 0.6, 0.1);	--green
-				else
-			   		SPDT_TEXT2Above:SetVertexColor(1.0, 0.9, 0.1);	--red
-		   		end
-			else
-		   		SPDT_TEXT2Above:SetVertexColor(1.0, 0.9, 0.1);		--yellow
-			end
+			SPDT_TEXT2Above:SetVertexColor(1.0, 0.9, 0.1);		--yellow
 			SPDT_TEXT2Above:Show();
 		end
 		
@@ -741,9 +653,6 @@ local function CheckPlayerBuffs()
 		--add the multiplied Damagebuff to the buffscore
 		buffscorecurrent = buffscorecurrent + buffscoredamagetemp;
 	end
-
-	--Set savedbuffscorecurrent to actual buffscorecurrent
-	savedbuffscorecurrent = buffscorecurrent;
 
 	--Insanity active procedure
 	if (InsanityFound == 1 and SolaceInsanity_Check() == true and HideSoD == 0) then
@@ -1100,26 +1009,10 @@ function ShadowPriestDoTTimerFrame_OnEvent(self, event, ...)
 					SPDT_TEXT1Above:SetText(string.format("%d", buffscorecurrent));
 					SPDT_TEXT1Above:Show();
 				end
-				
-				FindOrCreateCurrentMob();
-				if (currentmob) then
-					currentmob[2] = buffscorecurrent;
-					currentmob[10] = 0;
-					extended = false;
-					currentmob[4] = GetTime();				
-				end
 			elseif (spellid == WordPainID) then
 				if (HideNumberAboveSWP == 0) then
 					SPDT_TEXT2Above:SetText(string.format("%d", buffscorecurrent));
 					SPDT_TEXT2Above:Show();
-				end
-				
-				FindOrCreateCurrentMob();
-				if (currentmob) then
-					currentmob[3] = buffscorecurrent;
-					currentmob[11] = 0;
-					extended = false;
-					currentmob[9] = GetTime();
 				end
 			elseif (spellid == MindBlastID) then
 				--DEFAULT_CHAT_FRAME:AddMessage("Mindblast event: ");	
@@ -1157,14 +1050,6 @@ function ShadowPriestDoTTimerFrame_OnEvent(self, event, ...)
 		point, relativeTo, relativePoint, xOffset, yOffset = self:GetPoint(1);
 		ShadowPriestDoTTimerxPosiFrame = xOffset;
 	elseif (event == "PLAYER_REGEN_ENABLED") then
-		if (maxmoblist < #moblist) then
-			--SWP and VT don't last more than a minute so once we've been ooc for a minute, clear up the list.
-			for i = 1, #moblist do
-				if ((moblist[i][4]-GetTime() > 60000) and (moblist[i][9]-GetTime() > 60000) and (moblist[i][1] ~= currentmob[1])) then
-					table.remove(moblist, i);
-				end
-			end
-		end
 		isincombat = false;
 	elseif (event == "PLAYER_REGEN_DISABLED") then
 		isincombat = true;
@@ -1181,9 +1066,6 @@ local function SLASH_SHADOWPRIESTDOTTIMERhandler(msg, editbox)
 	elseif  msg == 'reset' then
 		ShadowPriestDoTTimerFrame:Hide();
 		ShadowPriestDoTTimerFrame:Show();
-		ClearMobList();
-	elseif  msg == 'clear' then
-		ClearMobList();
 	elseif  msg == 'noconfigmode' then
 		if (isincombat == false) then	
 			ShadowPriestDoTTimerFrame:EnableMouse(false);
@@ -1220,7 +1102,7 @@ local function SLASH_SHADOWPRIESTDOTTIMERhandler(msg, editbox)
 		ShadowPriestDoTTimerScaleFrame = 1.0
 		ShadowPriestDoTTimerFrame:SetScale(ShadowPriestDoTTimerScaleFrame);
 	else
-		print("Syntax: /spdt (show | hide | reset | configmode | noconfigmode | options | clearmoblist )");
+		print("Syntax: /spdt (show | hide | reset | configmode | noconfigmode | options)");
 		print("Syntax: /spdt (scale1 | scale2 | scale3 | scale4 | scale5 | scale6)");
 	end
 end
