@@ -1,5 +1,4 @@
--- Author      : derek, Bathral@BlackhandEU
--- Create Date : 25/10/2014
+-- Author: Riraeyi@MagtheridonEU, Bathral@BlackhandEU
 
 local defaultdamageweight = .17;
 local defaultmasteryweight = .56;

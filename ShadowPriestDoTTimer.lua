@@ -1,7 +1,4 @@
--- Author      : Kressilac /Duskwood - Bathral@BlackhandEU
--- UI elements borrowed from Shadow Timer and extended for better use.
--- Create Date : 25/10/2014
-
+-- Author: Riraeyi@MagtheridonEU, Bathral@BlackhandEU, Kressilac@DuskwoodUS
 
 local _; -- workaround to prevent leaking globals
 
