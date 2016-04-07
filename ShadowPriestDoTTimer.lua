@@ -46,9 +46,6 @@ local Texture3used = false;
 --Used to share Texture5 for Mindblast and SW:D
 local Texture5used = false;
 
---Used to indivate UVLS is active
-local UVLS_active = false;
-
 --Shadowy Apparition array 
 local ShadowyApp_GUID = {};
 local MyID;
@@ -96,9 +93,6 @@ local MindbenderID = 123040;
 local nameMindbender, rankMindbender, IconMindbender = GetSpellInfo(MindbenderID);
 ----------------------------------------------
 local Shadowy_ApparitionsID = 148859;
-----------------------------------------------
-local UVLS_procID = 138963;
-local _, _, IconUVLS = GetSpellInfo(UVLS_procID);
 ----------------------------------------------
 local fluidity_ID = 138002;
 local fluidity_name = GetSpellInfo(fluidity_ID);
@@ -202,7 +196,7 @@ local function FindOrCreateCurrentMob(targetguid_given)
 		end
 
 		if (not currentmob) then
-			-- GUID, buffscoreVT, buffscoreSWP, timewhenVTwascasted, bool_UVLSactiveonVT, bool_UVLSactiveonSWP, timeUVLScastedonVT, timeULVScastedonSWP, timewhenSWPwascasted, buffscoreofSA_hitsonVT, buffscoreofSA_hitsonSWP
+			-- GUID, buffscoreVT, buffscoreSWP, timewhenVTwascasted, _, _, _, _, timewhenSWPwascasted, buffscoreofSA_hitsonVT, buffscoreofSA_hitsonSWP
 			currentmob = {targetguid, 0, 0, GetTime(), 0, 0, 0, 0, GetTime(), 0, 0};
 			table.insert(moblist, currentmob);
 			--DEFAULT_CHAT_FRAME:AddMessage("SPDT New mob: " .. currentmob[1]);
@@ -350,12 +344,7 @@ local function CheckCurrentTargetDeBuffs()
 		--VT number above (re-)assignment
 		FindCurrentMob();
 		if (currentmob and (HideNumberAboveVT == 0)) then
-			if ((currentmob[5] == true) or (currentmob[10] == 1)) then
-				SPDT_TEXT1Above:SetText(string.format("%s", "UVLS"));
-			else
-				SPDT_TEXT1Above:SetText(string.format("%d", buffscorecurrent));
-				--old one was: SPDT_TEXT1Above:SetText(string.format("%d", currentmob[2]));
-			end
+			SPDT_TEXT1Above:SetText(string.format("%d", buffscorecurrent));
 		end
 	
 		--VTIcon display, coloring and hide procedure
@@ -369,15 +358,7 @@ local function CheckCurrentTargetDeBuffs()
 				end
 			else
 				if (currentmob) then
-					if (currentmob[5] == true) then
-						if ((GetTime() - currentmob[7]) < 15) then
-							--UVLS was active during DoT application and it is < 15s active
-							SPDT_Texture1:SetVertexColor(0.9, 0.2, 0.2);		--red
-						else
-							SPDT_Texture1:SetVertexColor(1.0, 1.0, 1.0);		--nothing
-							currentmob[5] = false;
-						end
-					elseif ((buffscorecurrent > (currentmob[2] + OffsetbuffscoreVT)) and (ColorBuffsWithBuffScore == 1)) then
+					if ((buffscorecurrent > (currentmob[2] + OffsetbuffscoreVT)) and (ColorBuffsWithBuffScore == 1)) then
 						SPDT_Texture1:SetVertexColor(0.2, 0.2, 0.8);		--blue
 					else
 						SPDT_Texture1:SetVertexColor(1.0, 1.0, 1.0);		--no color				
@@ -398,15 +379,7 @@ local function CheckCurrentTargetDeBuffs()
 		if (HideNumberAboveVT == 0) then
 			--set the color of the text above to green, when reapplication is usefull
 			if (currentmob) then
-				if (currentmob[5] == true) then
-					if ((GetTime() - currentmob[7]) < 15) then
-						--UVLS was active during DoT application and it is < 15s active
-						SPDT_TEXT1Above:SetVertexColor(0.9, 0.2, 0.2);		--red
-					else
-						SPDT_TEXT1Above:SetVertexColor(1.0, 1.0, 1.0);		--nothing
-						currentmob[5] = false;
-					end
-				elseif (buffscorecurrent > (currentmob[2] + OffsetbuffscoreVT)) then
+				if (buffscorecurrent > (currentmob[2] + OffsetbuffscoreVT)) then
 					SPDT_TEXT1Above:SetVertexColor(0.1, 0.6, 0.1);	--green
 				else
 			   		SPDT_TEXT1Above:SetVertexColor(1.0, 0.9, 0.1);	--red
@@ -440,12 +413,7 @@ local function CheckCurrentTargetDeBuffs()
 		--SWP number above assignment
 		FindCurrentMob();
 		if (currentmob and (HideNumberAboveSWP == 0)) then
-			if ((currentmob[6] == true) or (currentmob[11] == 1)) then
-				SPDT_TEXT2Above:SetText(string.format("%s", "UVLS"));
-			else
-				SPDT_TEXT2Above:SetText(string.format("%d", buffscorecurrent));
-				--old one was: SPDT_TEXT2Above:SetText(string.format("%d", currentmob[3]));
-			end
+			SPDT_TEXT2Above:SetText(string.format("%d", buffscorecurrent));
 		end
 	
 		--SWPIcon display, coloring and hide procedure
@@ -459,15 +427,7 @@ local function CheckCurrentTargetDeBuffs()
 				end
 			else
 				if (currentmob) then
-					if (currentmob[6] == true) then
-						if ((GetTime() - currentmob[8]) < 18) then
-							--UVLS was active during DoT application and it is < 18s active
-							SPDT_Texture2:SetVertexColor(0.9, 0.2, 0.2);		--red
-						else
-							SPDT_Texture2:SetVertexColor(1.0, 1.0, 1.0);		--nothing
-							currentmob[6] = false;
-						end
-					elseif ((buffscorecurrent > (currentmob[3] + OffsetbuffscoreSWP)) and (ColorBuffsWithBuffScore == 1)) then
+					if ((buffscorecurrent > (currentmob[3] + OffsetbuffscoreSWP)) and (ColorBuffsWithBuffScore == 1)) then
 						SPDT_Texture2:SetVertexColor(0.2, 0.2, 0.9);		--blue
 					else
 						SPDT_Texture2:SetVertexColor(1.0, 1.0, 1.0);		--no color				
@@ -489,15 +449,7 @@ local function CheckCurrentTargetDeBuffs()
 		if (HideNumberAboveSWP == 0) then
 			--set the color of the text above to green, when reapplication is usefull
 			if (currentmob) then
-				if (currentmob[6] == true) then
-					if ((GetTime() - currentmob[8]) < 18) then
-					--UVLS was active during DoT application and it is < 18s active
-						SPDT_TEXT2Above:SetVertexColor(0.9, 0.2, 0.2);		--red
-					else
-						SPDT_TEXT2Above:SetVertexColor(1.0, 1.0, 1.0);		--nothing
-						currentmob[6] = false;
-					end
-				elseif (buffscorecurrent > (currentmob[3] + OffsetbuffscoreSWP)) then
+				if (buffscorecurrent > (currentmob[3] + OffsetbuffscoreSWP)) then
 					SPDT_TEXT2Above:SetVertexColor(0.1, 0.6, 0.1);	--green
 				else
 			   		SPDT_TEXT2Above:SetVertexColor(1.0, 0.9, 0.1);	--red
@@ -593,7 +545,6 @@ local function CheckPlayerBuffs()
 	local EmbraceCD = 0;
 	local SurgeOfDarknessCD = 0;
 	local MindbenderCD = 0;
-	UVLS_active = false;
 	SPDT_Texture4:Hide();
 	
 	local found = false;
@@ -629,14 +580,6 @@ local function CheckPlayerBuffs()
 		if not bn then
 			finished = true;
 		else
-			--UVLS check for indication of 100% CritBuff
-			if (bspellId == UVLS_procID) then
-				UVLS_active = true;
-				if (Show_UVLSicon == 1) then
-					SPDT_Texture4:SetTexture(IconUVLS);
-					SPDT_Texture4:Show();
-				end
-			end
 			if (NumOfOrbs > 0) then
 				ShadowOrbsFound		= 1;
 				ShadowOrbsStacks	= NumOfOrbs;
@@ -1118,14 +1061,9 @@ function ShadowPriestDoTTimerFrame_OnUpdate(elapsed)
 				CheckCurrentTargetDeBuffs();
 				CheckPlayerBuffs();
 		
-				if (((buffscorecurrent > 0) or (UVLS_active == true)) and (isincombat == true) and (HideBuffscore == 0)) then
-					if (UVLS_active == true) then
-						SPDT_TEXT4:SetText(string.format("%s", "UVLS"));
-						SPDT_TEXT4:SetVertexColor(0.9, 0.2, 0.2);	--red
-					else
-						SPDT_TEXT4:SetText(string.format("%d", buffscorecurrent));
-						SPDT_TEXT4:SetVertexColor(1.0, 0.9, 0.1);	--yellow
-					end
+				if ((buffscorecurrent > 0) and (isincombat == true) and (HideBuffscore == 0)) then
+					SPDT_TEXT4:SetText(string.format("%d", buffscorecurrent));
+					SPDT_TEXT4:SetVertexColor(1.0, 0.9, 0.1);	--yellow
 					SPDT_TEXT4:Show();
 				else
 					SPDT_TEXT4:Hide();
@@ -1159,11 +1097,7 @@ function ShadowPriestDoTTimerFrame_OnEvent(self, event, ...)
 		if (unit == "player") then
 			if (spellid == VTID) then
 				if (HideNumberAboveVT == 0) then
-					if (UVLS_active == true) then
-						SPDT_TEXT1Above:SetText(string.format("%s", "UVLS"));
-					else
-						SPDT_TEXT1Above:SetText(string.format("%d", buffscorecurrent));
-					end
+					SPDT_TEXT1Above:SetText(string.format("%d", buffscorecurrent));
 					SPDT_TEXT1Above:Show();
 				end
 				
@@ -1172,23 +1106,11 @@ function ShadowPriestDoTTimerFrame_OnEvent(self, event, ...)
 					currentmob[2] = buffscorecurrent;
 					currentmob[10] = 0;
 					extended = false;
-					currentmob[4] = GetTime();
-					if (UVLS_active == true) then
-						currentmob[5] = true;
-						currentmob[7] = GetTime();
-						--DEFAULT_CHAT_FRAME:AddMessage("SPDT UVLS on VT: " .. currentmob[7]);
-					else
-						currentmob[5] = false;
-						currentmob[7] = 0;
-					end					
+					currentmob[4] = GetTime();				
 				end
 			elseif (spellid == WordPainID) then
 				if (HideNumberAboveSWP == 0) then
-					if (UVLS_active == true) then
-						SPDT_TEXT2Above:SetText(string.format("%s", "UVLS"));
-					else
-						SPDT_TEXT2Above:SetText(string.format("%d", buffscorecurrent));
-					end
+					SPDT_TEXT2Above:SetText(string.format("%d", buffscorecurrent));
 					SPDT_TEXT2Above:Show();
 				end
 				
@@ -1198,14 +1120,6 @@ function ShadowPriestDoTTimerFrame_OnEvent(self, event, ...)
 					currentmob[11] = 0;
 					extended = false;
 					currentmob[9] = GetTime();
-					if (UVLS_active == true) then
-						currentmob[6] = true;
-						currentmob[8] = GetTime();
-						--DEFAULT_CHAT_FRAME:AddMessage("SPDT UVLS on: " .. currentmob[8]);
-					else
-						currentmob[6] = false;
-						currentmob[8] = 0;
-					end	
 				end
 			elseif (spellid == MindBlastID) then
 				--DEFAULT_CHAT_FRAME:AddMessage("Mindblast event: ");	

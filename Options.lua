@@ -30,7 +30,6 @@ local defaulthideiconswp = 0;
 local defaulthideicondp = 0;
 local defaultshowpioffcd = 0;
 local defaultshowveoffcd = 0;
-local defaultshowuvlsicon = 0;
 local defaultcolorbuffswithbuffscore = 0;
 local defaultshowdotssooutoffcombat = 0;
 local defaultshoweverythingoutofcombat = 0;
@@ -217,11 +216,6 @@ function SaveButton_OnClick()
 		ShowVEOffCD = 1;
 	else
 		ShowVEOffCD = 0;
-	end
-	if (CheckButtonShowUVLSicon:GetChecked() == true) then
-		Show_UVLSicon = 1;
-	else
-		Show_UVLSicon = 0;
 	end
 	if (CheckButtonColorBuffsWithBuffScore:GetChecked() == true) then
 		ColorBuffsWithBuffScore = 1;
@@ -469,11 +463,6 @@ function OptionsFrame_OnEvent(self, event, ...)
 			--arg2 = "Cooldown Offset"
 			DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer Default ShowVEOffCD Loaded...");
 		end
-		if(not Show_UVLSicon) then			
-			Show_UVLSicon = defaultshowuvlsicon;
-			--arg2 = "Cooldown Offset"
-			DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer Default ShowUVLSicon Loaded...");
-		end
 		if(not ColorBuffsWithBuffScore) then			
 			ColorBuffsWithBuffScore = defaultcolorbuffswithbuffscore;
 			--arg2 = "Cooldown Offset"
@@ -584,10 +573,6 @@ function OptionsFrame_OnEvent(self, event, ...)
 			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Show VE Off CD");
 			CheckButtonShowVEOffCD:SetChecked(true);
 		end
-		if (Show_UVLSicon == 1) then
-			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Show UVLS icon on procc");
-			CheckButtonShowUVLSicon:SetChecked(true);
-		end
 		if (ColorBuffsWithBuffScore == 1) then
 			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Color buffs like buff score to on");
 			CheckButtonColorBuffsWithBuffScore:SetChecked(true);
@@ -666,8 +651,6 @@ function OptionsFrame_OnEvent(self, event, ...)
 		ShowPIOffCD = defaultshowpioffcd;
 	
 		ShowVEOffCD = defaultshowveoffcd;
-		
-		Show_UVLSicon = defaultshowuvlsicon;
 		
 		ColorBuffsWithBuffScore = defaultcolorbuffswithbuffscore;
 	
@@ -769,10 +752,6 @@ function OptionsFrame_OnEvent(self, event, ...)
 		if (ShowVEOffCD == 1) then
 			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Show VE Off CD");
 			CheckButtonShowVEOffCD:SetChecked(true);
-		end
-		if (Show_UVLSicon == 1) then
-			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Show UVLS icon on procc");
-			CheckButtonShowUVLSicon:SetChecked(true);
 		end
 		if (ColorBuffsWithBuffScore == 1) then
 			--DEFAULT_CHAT_FRAME:AddMessage("Shadow Priest DoT Timer: Color buffs like buff score to on");
@@ -905,11 +884,6 @@ function OptionsFrame_OnEvent(self, event, ...)
 		else
 			ShowVEOffCD = 0;
 		end	
-		if (CheckButtonShowUVLSicon:GetChecked() == true) then
-			Show_UVLSicon = 1;
-		else
-			Show_UVLSicon = 0;
-		end
 		if (CheckButtonColorBuffsWithBuffScore:GetChecked() == true) then
 			ColorBuffsWithBuffScore = 1;
 		else

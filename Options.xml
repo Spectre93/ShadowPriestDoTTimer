@@ -1092,29 +1092,6 @@
 					</Layer>
 				</Layers>
 			</CheckButton>
-			<CheckButton name="CheckButtonShowUVLSicon" inherits="UICheckButtonTemplate" text="Show UVLS icon on buffscore position when procc is active">
-				<Anchors>
-					<Anchor point="TOPLEFT">
-						<Offset x="350" y="-274" />
-					</Anchor>
-				</Anchors>
-				<Layers>
-					<Layer>
-						<FontString name="$parentText" inherits="GameFontNormalSmall" text="Show UVLS icon on proc" justifyH="LEFT">
-							<Size>
-								<AbsDimension x="160" y="20" />
-							</Size>
-							<Anchors>
-								<Anchor point="LEFT" relativePoint="RIGHT">
-									<Offset>
-										<AbsDimension x="-2" y="0" />
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-			</CheckButton>
 			<CheckButton name="CheckButtonColorBuffsWithBuffScore" inherits="UICheckButtonTemplate" text="Recolor icons like DoT BuffScore">
 				<Anchors>
 					<Anchor point="TOPLEFT">
